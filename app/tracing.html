@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>AuditableBlindCA - Tracing</title>
+  
+  <link rel="stylesheet" href="normalize.min.css">
+  <link rel="stylesheet" href="style.css">
+  <!-- Fonts -->
+  <link href='/roboto.css' rel='stylesheet' type='text/css'>
+  <link href="/font.min.css" rel="stylesheet" type="text/css">
+  <!-- // Fonts -->
+  
+  <script type="text/javascript" src= "jquery.min.js"></script>
+  <script type="text/javascript" src= "app.js"></script>
+
+  
+</head>
+<body>
+	<!-- Vertical Timeline -->
+	<section id="conference-timeline">
+		<div class="container">
+		<ol class="timeline">
+		<li>
+		<p class="lined">Preparation </p>
+		<a href = "http://127.0.0.1/index" id = "a_index"><span class="pointed"></span></a>
+		</li>
+
+		<li>
+		<p class="lined">Issuing</p>
+		<a href = "http://127.0.0.1/issuing" id = "a_issuing"><span class="pointed"></span></a>
+		</li>
+
+		<li>
+		<p class="lined">Verifying</p>
+		<a href = "http://127.0.0.1/verifying" id = "a_verifying"><span class="pointed"></span></a>
+		</li>
+
+		<li>
+		<p class="lined">Tracing</p>
+		<a href = "/" "a_tracing" ><span class="pointed"></span></a>
+		</li>
+		</ol>
+		</div>
+		
+		<div class="timeline-article" id = "smhtml">
+		</div>
+		
+		Credential Tracing
+		<hr>
+		<!-- Article -->
+		<div class="timeline-article">
+		<div class="content-left-container">
+		<div class="content-left"> 
+		<p>issuer stored &#958; <sup>&#965;</sup> as the user's identity. <span class="article-number" style = "font-size:42px">issuer<sup>*</sup></span></p>
+		
+		<ul>
+		  <li>&#958; <sup>&#965;</sup> = <input id = "xiupsilon" value = ""></input></li>
+		</ul>
+		
+		</div>
+		<span class="timeline-author"></span>
+		
+		</div>
+		<div class="content-right-container">
+
+		<div class="content-right">
+		
+		<p>
+		<span class="article-number" style = "font-size:40px">BCSM<sup>*</sup></span>
+		The blockchain returns the user's identity<br><br>
+		<a href = "javascript: void(0)" onclick="credential_tracing()" id = "traceCred">Execute</a><br><br>
+		&#950;<sub>1</sub> = <input id = "res_zeta_1"></input>
+		</p> 
+		</div>
+		</div>
+		<div class="meta-date">
+		 
+		<span class="data"> &#958; <sup>&#965;</sup></span>
+		<span class="date">&rarr;</span>
+		</div>
+		</div>
+		
+		
+		
+		<!-- // Article --> 
+		Identity Tracing
+		<hr>
+		<!-- Article -->
+		<div class="timeline-article">
+		<div class="content-left-container">
+		<div class="content-left"> 
+		<p>Given the issuer the credential &#950;<sub>1</sub>. <br><br>
+		<span class="article-number" style = "font-size:42px">issuer<sup>*</sup></span></p>
+		
+		<ul>
+		  <li>&#950;<sub>1</sub> = <input id = "zeta_1" value = ""></li>
+		</ul>
+		
+		</div>
+		<span class="timeline-author"></span>
+		
+		</div>
+		<div class="content-right-container">
+
+		<div class="content-right">
+		
+		<p>
+		<span class="article-number" style = "font-size:40px">BCSM<sup>*</sup></span>
+		The blockchain returns the user's credential<br><br>
+		<a href = "javascript: void(0)" onclick="identity_tracing()" id = "traceIden" >Execute</a><br><br>
+		&#958; <sup>&#965; = <input id = "credential_xiupsilon"></input>
+		</p>
+		</div>
+		</div>
+		<div class="meta-date">
+		 
+		<span class="data"> &#950;<sub>1</sub></span>
+		<span class="date">&rarr;</span>
+		</div>
+		</div>		
+    </div> 
+    <!-- <div class="timeline-end">End</div> -->
+	<b>Tracing Log</b>
+	<hr>
+	<div style = "width:100%; background: #e9ecef;">
+			<div class="timeline-wrapper" id = "tracelog">
+			</div>
+	</div>
+	<br><br>
+	
+  </section>
+  <!-- // Vertical Timeline -->
+  <div id="copyright">
+        <p>&copy; Copyright 2019 Rujia. All Rights Reserved</p>
+  </div>
+</body>
+</html>
