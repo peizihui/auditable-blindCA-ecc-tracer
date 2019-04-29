@@ -55,6 +55,14 @@ To compile a smart contract, run:
 
 * `truffle compile`
 
+The correct output:
+```
+Building contracts for Oasis   
+   Compiling AuditTracer.sol...    
+   Compiling Migrations.sol...    
+Writing artifacts to ./build/contracts  
+```
+
 Deploy the contract with truffle:
 
 * Edit `truffle.js` to add the mnemonic for your private key. This will be the address that deploys the smart contract;
@@ -76,5 +84,27 @@ In this example the ballot was deployed to address `0x03D1ee0729188eca4c614f2C12
 
 * Launch the local web server: `npm run dev`
 
+The correct output:
+```
+Project is running at http://localhost:8080/
+webpack output is served from /
+Hash: 7abdd3295cdaa29f24cb
+Version: webpack 2.7.0
+Time: 9079ms
+                         Asset     Size  Chunks                    Chunk Names
+           index_register.html  10.7 kB          [emitted]         
+                     .....
+  [236] multi (webpack)-dev-server/client?http://localhost:8080 ./app/javascripts/app.js 40 bytes {1} [built]
+     + 221 hidden modules
+webpack: Compiled successfully.
+```
+
+
 * In your browser visit `127.0.0.1:8080/tracing.html?contractAddress=<address>`
 
+## Reference
+[https://docs.oasiscloud.io/en/latest/quickstart-guide/](https://docs.oasiscloud.io/en/latest/quickstart-guide/) 
+
+[https://docs.oasiscloud.io/en/latest/](https://docs.oasiscloud.io/en/latest/)
+
+[https://github.com/oasislabs/secret-ballot](https://github.com/oasislabs/secret-ballot)
