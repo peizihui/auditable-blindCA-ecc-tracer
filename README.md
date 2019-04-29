@@ -80,7 +80,9 @@ In this example the ballot was deployed to address `0x03D1ee0729188eca4c614f2C12
 * In your browser visit `127.0.0.1:8080/tracing.html?contractAddress=<address>`
 
 ## Reference
-[https://docs.oasiscloud.io/en/latest/quickstart-guide/](https://docs.oasiscloud.io/en/latest/quickstart-guide/)
-[https://docs.oasiscloud.io/en/latest/](https://docs.oasiscloud.io/en/latest/)
-[https://github.com/oasislabs/secret-ballot](https://github.com/oasislabs/secret-ballot)
+[https://docs.oasiscloud.io/en/latest/quickstart-guide/](https://docs.oasiscloud.io/en/latest/quickstart-guide/) 
+
+[https://docs.oasiscloud.io/en/latest/](https://docs.oasiscloud.io/en/latest/) 
+
+[https://github.com/oasislabs/secret-ballot](https://github.com/oasislabs/secret-ballot) 
 
