@@ -57,8 +57,8 @@ contract AuditTracer {
 	}
 	
 	function identity_tracing() public returns(uint){
-	        CredentialTraceTimes[msg.sender] += 1;
-	    return CredentialTraceResults[msg.sender];
+	        IdentityTraceTimes[msg.sender] += 1;
+	    return IdentityTraceResults[msg.sender];
 	}
 
 	// trace the credential
@@ -76,7 +76,7 @@ contract AuditTracer {
             uint nxt = quick_power(xt, q - 2, q);
             IdentityTraceResults[msg.sender] = quick_power(zeta1, nxt, p);
         }
-        IdentityTraceTimes[msg.sender] += 1;
+        //IdentityTraceTimes[msg.sender] += 1;
         identity_tracing_log(zeta1);
     }
     
