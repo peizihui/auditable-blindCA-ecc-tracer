@@ -224,7 +224,7 @@ window.initParam = function(){
 		var smdiv = "<div class='alert alert-success' style='width: 98%'>Your tracing smart address is deployed at <a href = 'https://blockexplorer.oasiscloud.io/address/"+smddrsss+"/transactions' target = '_blank'>"+smddrsss+"</a></div>"
 		$("#smhtml").html(smdiv)
 		
-		$("#xiupsilon").val(getUrlParameter('xi'))
+		$("#xiupsilon").val(getUrlParameter('xiupsilon'))
 		$("#zeta_1").val(getUrlParameter('zeta1'))
 	}
 	

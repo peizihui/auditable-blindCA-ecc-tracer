@@ -31,7 +31,6 @@ Note right of Blockchain: Only the Blockchain  <br/> konws relationship  <br/> o
 |Tracing|`contracts/AuditTracer.sol`|Tracing a credential/indetity.|
 
 
-
 Issuer or Verifier first builds an end-to-end encrypted channel with privacy-preserving smart contract $\mathcal{PPSC}$. Then, given valid $\xi^{\upsilon}$, the $\mathcal{PPSC}$ computes $I_{cred} = (\xi^{\upsilon})^{x_t}$. Observe that:
 
 $$I_{cred} = (\xi^{\upsilon})^{x_t} = g^{\gamma\upsilon x_t} = y_t^{\gamma\upsilon} = \zeta_1$$
@@ -78,11 +77,4 @@ In this example the ballot was deployed to address `0x03D1ee0729188eca4c614f2C12
 * Launch the local web server: `npm run dev`
 
 * In your browser visit `127.0.0.1:8080/tracing.html?contractAddress=<address>`
-
-## Reference
-[https://docs.oasiscloud.io/en/latest/quickstart-guide/](https://docs.oasiscloud.io/en/latest/quickstart-guide/) 
-
-[https://docs.oasiscloud.io/en/latest/](https://docs.oasiscloud.io/en/latest/) 
-
-[https://github.com/oasislabs/secret-ballot](https://github.com/oasislabs/secret-ballot) 
 
