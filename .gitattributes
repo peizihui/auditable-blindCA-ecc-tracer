@@ -1,0 +1,3 @@
+*.py linguist-language=solidity
+*.html linguist-language=solidity
+*.css linguist-language=solidity
