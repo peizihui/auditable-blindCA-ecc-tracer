@@ -5,6 +5,13 @@ pragma solidity ^0.4.18;
 //version:1.0
 
 contract AuditTracer {
+    
+    uint256 constant public gx = 102774397821268834369191526185923947623243439620500925568200586971751712539067;
+    uint256 constant public gy = 86424032084068844430865803081535753656401552187197998029248979051107469381791;
+    uint256 constant public p = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F;
+    uint256 constant public n = 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141;
+    uint256 constant public a = 0;
+    uint256 constant public b = 7;
  
     // The address of the account that created this ballot.
     address public tracerCreator;
@@ -14,11 +21,18 @@ contract AuditTracer {
     mapping (address => uint256) private IdentityTraceTimes;
     mapping (address => uint256) private IdentityTraceResults;
 	
-	uint public p;
-    uint public q;
-    uint private xt;
-    uint public yt;
-
+    uint256 public index = 0;
+    uint256 public xt;
+    
+    uint256 public yt_x;
+    uint256 public yt_y;
+    
+    uint256 public c_x;
+    uint256 public c_y;
+    
+    uint256 public i_x;
+    uint256 public i_y;
+    
     constructor() public {
         tracerCreator = msg.sender;
     }
@@ -26,88 +40,270 @@ contract AuditTracer {
     event trace_log(
         string information,
         address indexed sender,
-        uint timestamp,
-        uint calltimes,
-        uint obj
+        uint256 timestamp,
+        uint256 calltimes,
+        uint256 obj
     );
     
-    function credential_tracing_log(uint obj) internal {
+    function credential_tracing_log(uint256 obj) internal {
          emit trace_log("credential_tracing_log", msg.sender, now, CredentialTraceTimes[msg.sender], obj);
     }
     
-    function identity_tracing_log(uint obj) internal {
-         // print logs
+    function identity_tracing_log(uint256 obj) internal {
          emit trace_log("credential_tracing_log", msg.sender, now, IdentityTraceTimes[msg.sender], obj);
     }
 	
-	function register_parameter(uint _q, uint _N, uint _g, uint _p) public{   
-        xt = rand_less_than(_q,_N);
-        yt = quick_power(_g,xt,_p);
-        p = _p;
-        q = _q;
+	function register_parameter() public{   
+        xt = rand_less_than(n);
     }
-	
-	function get_public_key() public view returns(uint){  
-		return yt;
+    
+    function get_private_key() public view returns(uint256){  
+		return xt;
+	}
+    
+    function calculate_public_key() public{  
+        (yt_x, yt_y) = ecmul(gx, gy, xt);
 	}
 	
-	function credential_tracing() public returns(uint){
+	function get_public_key() public view returns(uint256 , uint256 ){  
+		return (yt_x, yt_y);
+	}
+	
+	function credential_tracing() public returns(uint256,uint256){
 	        CredentialTraceTimes[msg.sender] += 1;
-	    return CredentialTraceResults[msg.sender];
+	    return (c_x,c_y);
 	}
 	
-	function identity_tracing() public returns(uint){
-	        IdentityTraceTimes[msg.sender] += 1;
-	    return IdentityTraceResults[msg.sender];
+	function identity_tracing() public returns(uint256,uint256){
+	        CredentialTraceTimes[msg.sender] += 1;
+	     return (i_x,i_y);
 	}
 
 	// trace the credential
-    function credential_calculating(uint xiupsilon) public returns(uint){
+    function credential_calculating(uint256 xiupsilon_x, uint256 xiupsilon_y) public{
 	    if (CredentialTraceTimes[msg.sender] == 0){
-            CredentialTraceResults[msg.sender] = quick_power(xiupsilon, xt, p);
+            (c_x,c_y) = ecmul(xiupsilon_x, xiupsilon_y, xt);
         }
-        //CredentialTraceTimes[msg.sender] += 1;
-        credential_tracing_log(xiupsilon);
+        credential_tracing_log(xiupsilon_x);
     }
     
     // trace the identity
-    function identity_calculating(uint zeta1) public{
+    function identity_calculating(uint256 zeta1_x, uint256 zeta1_y) public{
         if (IdentityTraceTimes[msg.sender] == 0){
-            uint nxt = quick_power(xt, q - 2, q);
-            IdentityTraceResults[msg.sender] = quick_power(zeta1, nxt, p);
+            uint256 nxt = quick_power(xt, n - 2, n);
+            (i_x,i_y) = ecmul(zeta1_x, zeta1_y, nxt);
         }
-        //IdentityTraceTimes[msg.sender] += 1;
-        identity_tracing_log(zeta1);
+        identity_tracing_log(zeta1_x);
     }
     
     // Math helper functions
-    function rand_less_than(uint upper_bound, uint nbits) private returns(uint){
-        uint r = PRNG(nbits);
+    function rand_less_than(uint256 upper_bound) private returns(uint256){
+        index = index + 1;
+        uint256 r = PRNG(index);
         if(r < upper_bound){
             return r;
         }
-        rand_less_than(upper_bound,nbits);
+        
+        rand_less_than(upper_bound);
+    }
+    
+    function PRNG(uint256 t) private view returns(uint256) {
+        return uint256(uint256(keccak256(abi.encodePacked(msg.sender,now,t)))) ;
     }
 
-    function quick_power(uint a, uint b, uint m) private returns(uint){
-      uint result = 1;
-      for(uint count = 1; count <= b; count*=2){
-          if(b & count != 0){
-              result = mulmod(result, a, m);
+    function quick_power(uint256 al, uint256 bl, uint256 m) private pure returns(uint256){
+      uint256 result = 1;
+      for(uint256 count = 1; count <= bl; count*=2){
+          if(bl & count != 0){
+              result = mulmod(result, al, m);
           }
-          a = mulmod(a, a, m);
+          al = mulmod(al, al, m);
       }
       return result;
     }
 
-    function PRNG(uint nbits) private returns(uint) {
-        if(nbits == 40){
-            return uint40(uint256(keccak256(abi.encodePacked(msg.sender,now))));
-        } else if (nbits == 80){
-            return uint80(uint256(keccak256(abi.encodePacked(msg.sender,now))));
-        }
-        return uint(uint256(keccak256(abi.encodePacked(msg.sender,now))));
-        //, blockhash(block.number - 1)
+    function _jAdd(
+        uint256 x1, uint256 z1,
+        uint256 x2, uint256 z2)
+        internal 
+        pure
+        returns(uint256 x3, uint256 z3)
+    {
+        (x3, z3) = (
+            addmod(
+                mulmod(z2, x1, n),
+                mulmod(x2, z1, n),
+                n
+            ),
+            mulmod(z1, z2, n)
+        );
     }
-	
+
+    function _jSub(
+        uint256 x1, uint256 z1,
+        uint256 x2, uint256 z2)
+        internal 
+        pure
+        returns(uint256 x3, uint256 z3)
+    {
+        (x3, z3) = (
+            addmod(
+                mulmod(z2, x1, n),
+                mulmod(n - x2, z1, n),
+                n
+            ),
+            mulmod(z1, z2, n)
+        );
+    }
+
+    function _jMul(
+        uint256 x1, uint256 z1,
+        uint256 x2, uint256 z2)
+        public 
+        pure
+        returns(uint256 x3, uint256 z3)
+    {
+        (x3, z3) = (
+            mulmod(x1, x2, n),
+            mulmod(z1, z2, n)
+        );
+    }
+
+    function _jDiv(
+        uint256 x1, uint256 z1,
+        uint256 x2, uint256 z2) 
+        internal 
+        pure
+        returns(uint256 x3, uint256 z3)
+    {
+        (x3, z3) = (
+            mulmod(x1, z2, n),
+            mulmod(z1, x2, n)
+        );
+    }
+
+    function _inverse(uint256 val) internal pure
+        returns(uint256 invVal)
+    {
+        uint256 t = 0;
+        uint256 newT = 1;
+        uint256 r = n;
+        uint256 newR = val;
+        uint256 qi;
+        while (newR != 0) {
+            qi = r / newR;
+
+            (t, newT) = (newT, addmod(t, (n - mulmod(qi, newT, n)), n));
+            (r, newR) = (newR, r - qi * newR );
+        }
+
+        return t;
+    }
+
+    function _ecAdd(
+        uint256 x1, uint256 y1, uint256 z1,
+        uint256 x2, uint256 y2, uint256 z2) 
+        internal 
+        pure
+        returns(uint256 x3, uint256 y3, uint256 z3)
+    {
+        uint256 lx;
+        uint256 lz;
+        uint256 da;
+        uint256 db;
+
+        if (x1 == 0 && y1 == 0) {
+            return (x2, y2, z2);
+        }
+
+        if (x2 == 0 && y2 == 0) {
+            return (x1, y1, z1);
+        }
+
+        if (x1 == x2 && y1 == y2) {
+            (lx, lz) = _jMul(x1, z1, x1, z1);
+            (lx, lz) = _jMul(lx, lz, 3, 1);
+            (lx, lz) = _jAdd(lx, lz, a, 1);
+
+            (da,db) = _jMul(y1, z1, 2, 1);
+        } else {
+            (lx, lz) = _jSub(y2, z2, y1, z1);
+            (da, db) = _jSub(x2, z2, x1, z1);
+        }
+
+        (lx, lz) = _jDiv(lx, lz, da, db);
+
+        (x3, da) = _jMul(lx, lz, lx, lz);
+        (x3, da) = _jSub(x3, da, x1, z1);
+        (x3, da) = _jSub(x3, da, x2, z2);
+
+        (y3, db) = _jSub(x1, z1, x3, da);
+        (y3, db) = _jMul(y3, db, lx, lz);
+        (y3, db) = _jSub(y3, db, y1, z1);
+
+        if (da != db) {
+            x3 = mulmod(x3, db, n);
+            y3 = mulmod(y3, da, n);
+            z3 = mulmod(da, db, n);
+        } else {
+            z3 = da;
+        }
+    }
+
+    function _ecDouble(uint256 x1, uint256 y1, uint256 z1) internal pure
+        returns(uint256 x3, uint256 y3, uint256 z3)
+    {
+        (x3, y3, z3) = _ecAdd(x1, y1, z1, x1, y1, z1);
+    }
+
+    function _ecMul(uint256 d, uint256 x1, uint256 y1, uint256 z1) internal pure
+        returns(uint256 x3, uint256 y3, uint256 z3)
+    {
+        uint256 remaining = d;
+        uint256 px = x1;
+        uint256 py = y1;
+        uint256 pz = z1;
+        uint256 acx = 0;
+        uint256 acy = 0;
+        uint256 acz = 1;
+
+        if (d == 0) {
+            return (0, 0, 1);
+        }
+
+        while (remaining != 0) {
+            if ((remaining & 1) != 0) {
+                (acx,acy,acz) = _ecAdd(acx, acy, acz, px, py, pz);
+            }
+            remaining = remaining / 2;
+            (px, py, pz) = _ecDouble(px, py, pz);
+        }
+
+        (x3, y3, z3) = (acx, acy, acz);
+    }
+
+    function ecadd(
+        uint256 x1, uint256 y1,
+        uint256 x2, uint256 y2)
+        internal
+        pure
+        returns(uint256 x3, uint256 y3)
+    {
+        uint256 z;
+        (x3, y3, z) = _ecAdd(x1, y1, 1, x2, y2, 1);
+        z = _inverse(z);
+        x3 = mulmod(x3, z, n);
+        y3 = mulmod(y3, z, n);
+    }
+
+    function ecmul(uint256 x1, uint256 y1, uint256 scalar) public pure
+        returns(uint256 x2, uint256 y2)
+    {
+        uint256 z;
+        (x2, y2, z) = _ecMul(scalar, x1, y1, 1);
+        z = _inverse(z);
+        x2 = mulmod(x2, z, n);
+        y2 = mulmod(y2, z, n);
+    }
+
 }

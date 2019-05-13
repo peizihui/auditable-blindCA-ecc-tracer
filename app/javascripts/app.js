@@ -60,8 +60,13 @@ window.credential_tracing = async function () {
 window.get_public_key = async function () {
   try {
   
-    let public_key = await AuditTracer.methods.get_public_key().call();
-	  
+    let calculate_public_key = AuditTracer.methods.calculate_public_key();
+	await calculate_public_key.send();
+	console.log(calculate_public_key);
+	
+	let public_key = await AuditTracer.methods.get_public_key().call();
+	console.log(public_key);	
+
 	$("#myicon3").removeClass();
 	$("#myicon3").addClass("myicon-tick-checked");
 	
@@ -98,8 +103,12 @@ window.register = async function () {
     let _g = getUrlParameter('g');
     let _p = getUrlParameter('p');
 
-    let parameters = AuditTracer.methods.register_parameter(_q,_N,_g,_p);
+    let parameters = AuditTracer.methods.register_parameter();
     await  parameters.send();
+	
+	let privatekey = await AuditTracer.methods.get_private_key().call();
+	alert(privatekey)
+	console.log(privatekey)
 
     $("#register-status").removeClass();
     $("#register-status").addClass("alert alert-success");
