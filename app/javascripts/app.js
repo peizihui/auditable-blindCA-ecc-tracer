@@ -41,8 +41,10 @@ window.credential_tracing = async function () {
 	let zeta1 = getUrlParameter('zeta1');
 	let xiupsilon = getUrlParameter('xiupsilon');
 	
-    
-	let credential = AuditTracer.methods.credential_calculating(xiupsilon);
+    let xiupsilon_gx = xiupsilon.substring(1,xiupsilon.indexOf(","))
+	let xiupsilon_gy = trimStr(xiupsilon.substring(xiupsilon.indexOf(",")+1, xiupsilon.length-1))
+	
+	let credential = AuditTracer.methods.credential_calculating(xiupsilon_gx,xiupsilon_gy);
 	await  credential.send();
 	console.log(credential)
 		
@@ -82,10 +84,11 @@ window.get_public_key = async function () {
 	
 	$("#myicon6").removeClass();
     $("#myicon6").addClass("myicon-tick-checked");
-  
-    $("#yt").val(public_key)
-	$("#issueCred").attr("href","http://127.0.0.1/issuing?pk="+public_key+"&contractAddress="+contractAddress);
-	$("#a_issuing").attr("href","http://127.0.0.1/issuing?pk="+public_key+"&contractAddress="+contractAddress);
+  	
+	$("#yt").val("[" + public_key[0] + "," + public_key[1] + "]")
+	
+	$("#issueCred").attr("href","http://127.0.0.1/issuing?pk="+public_key[0]+"&contractAddress="+contractAddress);
+	$("#a_issuing").attr("href","http://127.0.0.1/issuing?pk="+public_key[0]+"&contractAddress="+contractAddress);
 
   } catch (err) {
     $("#register-status").text("Error Deploying: " + err);
@@ -98,19 +101,17 @@ window.get_public_key = async function () {
 window.register = async function () {
   try {
 
-	let _a = "0"
-	let _b = "7"
-	let _p = "115792089237316195423570985008687907853269984665640564039457584007908834671663"
-	let _gx = "14519509735293947827288577209312317083665953431108465511763141066544895460406"
-	let _gy = "19684769395795572483620032515699151948010901016215908752425022930402275400968"
+	let _a = getUrlParameter('a')
+	let _b = getUrlParameter('b')
+	let _p = getUrlParameter('p')
+	let _g = getUrlParameter('g')
+	let _gx = _g.substring(1,_g.indexOf(","))
+	let _gy = trimStr(_g.substring(_g.indexOf(",")+1, _g.length-1))
 
-	alert(1111)
     let parameters = AuditTracer.methods.register_parameter(_a,_b,_p,_gx,_gy);
     await  parameters.send();
 	
-	let privatekey = await AuditTracer.methods.get_private_key().call();
-	alert(privatekey)
-	console.log(privatekey)
+	//let privatekey = await AuditTracer.methods.get_private_key().call();
 
     $("#register-status").removeClass();
     $("#register-status").addClass("alert alert-success");
@@ -118,6 +119,7 @@ window.register = async function () {
   
     $("#myicon4").removeClass();
     $("#myicon4").addClass("myicon-tick-checked");
+
 	
   } catch (err) {
     $("#register-status").text("Error Deploying: " + err);
@@ -334,6 +336,10 @@ window.unlock = function(){
 		$("#error-deploy-status").css('display','block');
 		$("#error-deploy-status").text("Error: Newer version of metamask needed!");
 	}
+}
+
+window.trimStr = function(str){
+	return str.replace(/(^\s*)|(\s*$)/g,"");
 }
 
 $(function(){
