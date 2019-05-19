@@ -6,12 +6,12 @@ pragma solidity ^0.4.18;
 
 contract AuditTracer {
     
-    uint256 constant public gx = 102774397821268834369191526185923947623243439620500925568200586971751712539067;
-    uint256 constant public gy = 86424032084068844430865803081535753656401552187197998029248979051107469381791;
-    uint256 constant public p = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F;
-    uint256 constant public n = 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141;
-    uint256 constant public a = 0;
-    uint256 constant public b = 7;
+    uint256 public gx;
+    uint256 public gy;
+    uint256 public p;
+    uint256 public n;
+    uint256 public a;
+    uint256 public b;
  
     // The address of the account that created this ballot.
     address public tracerCreator;
@@ -33,8 +33,14 @@ contract AuditTracer {
     uint256 public i_x;
     uint256 public i_y;
     
-    constructor() public {
+    constructor(uint256 _gx, uint256 _gy, uint256 _p, uint256 _n, uint256 _a, uint256 _b) public {
         tracerCreator = msg.sender;
+		gx = _gx;
+		gy = _gy;
+		p = _p;
+		n = _n;
+		a = _a;
+		b = _b;
     }
  
     event trace_log(
@@ -126,7 +132,7 @@ contract AuditTracer {
         uint256 x1, uint256 z1,
         uint256 x2, uint256 z2)
         internal 
-        pure
+        view
         returns(uint256 x3, uint256 z3)
     {
         (x3, z3) = (
@@ -143,7 +149,7 @@ contract AuditTracer {
         uint256 x1, uint256 z1,
         uint256 x2, uint256 z2)
         internal 
-        pure
+        view
         returns(uint256 x3, uint256 z3)
     {
         (x3, z3) = (
@@ -160,7 +166,7 @@ contract AuditTracer {
         uint256 x1, uint256 z1,
         uint256 x2, uint256 z2)
         public 
-        pure
+        view
         returns(uint256 x3, uint256 z3)
     {
         (x3, z3) = (
@@ -173,7 +179,7 @@ contract AuditTracer {
         uint256 x1, uint256 z1,
         uint256 x2, uint256 z2) 
         internal 
-        pure
+        view
         returns(uint256 x3, uint256 z3)
     {
         (x3, z3) = (
@@ -182,7 +188,7 @@ contract AuditTracer {
         );
     }
 
-    function _inverse(uint256 val) internal pure
+    function _inverse(uint256 val) internal view
         returns(uint256 invVal)
     {
         uint256 t = 0;
@@ -204,7 +210,7 @@ contract AuditTracer {
         uint256 x1, uint256 y1, uint256 z1,
         uint256 x2, uint256 y2, uint256 z2) 
         internal 
-        pure
+        view
         returns(uint256 x3, uint256 y3, uint256 z3)
     {
         uint256 lx;
@@ -250,13 +256,13 @@ contract AuditTracer {
         }
     }
 
-    function _ecDouble(uint256 x1, uint256 y1, uint256 z1) internal pure
+    function _ecDouble(uint256 x1, uint256 y1, uint256 z1) internal view
         returns(uint256 x3, uint256 y3, uint256 z3)
     {
         (x3, y3, z3) = _ecAdd(x1, y1, z1, x1, y1, z1);
     }
 
-    function _ecMul(uint256 d, uint256 x1, uint256 y1, uint256 z1) internal pure
+    function _ecMul(uint256 d, uint256 x1, uint256 y1, uint256 z1) internal view
         returns(uint256 x3, uint256 y3, uint256 z3)
     {
         uint256 remaining = d;
@@ -286,7 +292,7 @@ contract AuditTracer {
         uint256 x1, uint256 y1,
         uint256 x2, uint256 y2)
         internal
-        pure
+        view
         returns(uint256 x3, uint256 y3)
     {
         uint256 z;
@@ -296,7 +302,7 @@ contract AuditTracer {
         y3 = mulmod(y3, z, n);
     }
 
-    function ecmul(uint256 x1, uint256 y1, uint256 scalar) public pure
+    function ecmul(uint256 x1, uint256 y1, uint256 scalar) public view
         returns(uint256 x2, uint256 y2)
     {
         uint256 z;
