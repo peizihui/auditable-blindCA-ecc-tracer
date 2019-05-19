@@ -42,19 +42,29 @@
 		</ol>
 		</div>
 
-		 1. Set up parameters &nbsp;&nbsp;&nbsp;&nbsp; <s> Set up </s>
+		<b>Version: Elliptic Curve Cryptography <i class="fab fa-expeditedssl"></i> </b> <br> <br>
+		1. Set up parameters &nbsp;&nbsp;&nbsp;&nbsp;
+		
+		<!-- <select name="jumpMenu" id="selectParam"> 
+		<option value="secp256k1">secp256k1</option> 
+		<option value="secp192k1">secp192k1</option> 
+		</select> -->
+		
+		<input type="radio" name="secp" id = "secp256k1" value="secp256k1" checked>secp256k1 <i class="fa fa-check-circle fa-check" id ="isecp256k1" style = "display:none"></i>
+		&nbsp;&nbsp;&nbsp;&nbsp; |
+        <input type="radio" name="secp" id = "secp192k1" value="secp192k1">secp192k1 <i class="fa fa-check-circle fa-check" id ="isecp192k1" style = "display:none"></i>
+		 
 		<hr>
 		<!-- Article -->
 		<div class="timeline-article">
 		<div class="content-left-container">
 		<div class="content-left"> 
 		<p><span class="article-number">Issuer</span>
-		
-		Set L, N = 256, 40  <br>
+		<label for="description">a = </label><span class=""><input id = "a1"></input></span><br>
+		<label for="description">b = </label><span class=""><input id = "b1"></input></span><br>
 		<label for="description">p = </label><span class=""><input id = "p1"></input></span><br>
-		<label for="description">q = </label><span class=""><input id = "q1"></input></span><br>
 		<label for="description">g = </label><span class=""><input id = "g1"></input></span><br>
-		<label for="description">h = </label><span class=""><input id = "h1"></input></span><br>
+		<label for="description">h = </label><span class=""><input id = "h1"></input></span><br> 
 		</p>
 		</div>
 		<span class="timeline-author"></span>
@@ -63,12 +73,11 @@
 
 		<div class="content-right">
 		<p> <span class="article-number">User</span>
-		
-		Set L, N = 256, 40.<br>
+		<label for="description">a = </label><span class=""><input id = "a2"></input></span><br>
+		<label for="description">b = </label><span class=""><input id = "b2"></input></span><br>
 		<label for="description">p = </label><span class=""><input id = "p2"></input></span><br>
-		<label for="description">q = </label><span class=""><input id = "q2"></input></span><br>
 		<label for="description">g = </label><span class=""><input id = "g2"></input></span><br>
-		<label for="description">h = </label><span class=""><input id = "h2"></input></span><br>
+		<label for="description">h = </label><span class=""><input id = "h2"></input></span><br> 
 		</p>
 		</div>
 
@@ -89,10 +98,10 @@
 		<div class="content-left">
 		<p class = "sp">
 		
-		Please click <s>here</s> to generation issuer's public key and private key.<br>
+		Please click <a href = "javascript: void(0)" class="" id = "issuerkey">here</a> to generation issuer's public key and private key.<br>
 		<label class="textdescription">x <font color = "red">(private)</font> = </label> <span class=""><input id = "x"></input></span><br>
-		<label class="textdescription">y (public) = g<sup>x</sup> = </label>             <span class=""><input id = "y"></input></span><br>
-		<label class="textdescription">&#918; = &#919;<sub>1</sub>(p,q,g,h,y) = </label> <span class=""><input id = "z1"></input></span><br>
+		<label class="textdescription">y (public) = xP = </label>             <span class=""><input id = "y"></input></span><br>
+		<label class="textdescription">&#918; = &#919;<sub>1</sub>(g,h,y) = </label> <span class=""><input id = "z1"></input></span><br>
 		</p>
 		</div>
 
@@ -101,10 +110,10 @@
 		<div class="content-right">
 		<p class = "sp">
 		
-		Please click <s>here</s> to generation user's public key and private key.<br>
+		Please click <a href = "javascript: void(0)" class="" id = "userkey">here</a> to generation user's public key and private key.<br>
 		<label class="textdescription">&#955; <font color = "red">(private)</font>  = </label><span class=""><input id = "gamma"></input></span><br>
-		<label class="textdescription">&#958; (public) = g<sup>&#955;</sup> = </label><span class=""><input id = "xi"></input></span><br>
-		<label class="textdescription">&#918; = &#919;<sub>1</sub>(p,q,g,h,y) = </label><span class=""><input id = "z2"></input><input id = "N" type = "hidden" ></input></span><br>
+		<label class="textdescription">&#958; (public) = &#955;P = </label><span class=""><input id = "xi"></input></span><br>
+		<label class="textdescription">&#918; = &#919;<sub>1</sub>(g,h,y) = </label><span class=""><input id = "z2"></input></span><br>
 		</p>
 		</div>
 		<!-- <span class="timeline-author">John Doe</span> -->

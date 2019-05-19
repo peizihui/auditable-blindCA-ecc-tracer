@@ -9,7 +9,6 @@ contract AuditTracer {
     uint256 public gx;
     uint256 public gy;
     uint256 public p;
-    uint256 public n;
     uint256 public a;
     uint256 public b;
  
@@ -33,14 +32,8 @@ contract AuditTracer {
     uint256 public i_x;
     uint256 public i_y;
     
-    constructor(uint256 _gx, uint256 _gy, uint256 _p, uint256 _n, uint256 _a, uint256 _b) public {
+    constructor() public {
         tracerCreator = msg.sender;
-		gx = _gx;
-		gy = _gy;
-		p = _p;
-		n = _n;
-		a = _a;
-		b = _b;
     }
  
     event trace_log(
@@ -59,8 +52,13 @@ contract AuditTracer {
          emit trace_log("credential_tracing_log", msg.sender, now, IdentityTraceTimes[msg.sender], obj);
     }
 	
-	function register_parameter() public{   
-        xt = rand_less_than(n);
+	function register_parameter(uint256 _a, uint256 _b, uint256 _p, uint256 _gx, uint256 _gy) public{ 
+		a = _a;
+		b = _b;
+		p = _p;
+		gx = _gx;
+		gy = _gy;
+        xt = rand_less_than(_p);
     }
     
     function get_private_key() public view returns(uint256){  
@@ -96,20 +94,18 @@ contract AuditTracer {
     // trace the identity
     function identity_calculating(uint256 zeta1_x, uint256 zeta1_y) public{
         if (IdentityTraceTimes[msg.sender] == 0){
-            uint256 nxt = quick_power(xt, n - 2, n);
+            uint256 nxt = quick_power(xt, p - 2, p);
             (i_x,i_y) = ecmul(zeta1_x, zeta1_y, nxt);
         }
         identity_tracing_log(zeta1_x);
     }
     
-    // Math helper functions
     function rand_less_than(uint256 upper_bound) private returns(uint256){
         index = index + 1;
         uint256 r = PRNG(index);
         if(r < upper_bound){
             return r;
         }
-        
         rand_less_than(upper_bound);
     }
     
@@ -137,11 +133,11 @@ contract AuditTracer {
     {
         (x3, z3) = (
             addmod(
-                mulmod(z2, x1, n),
-                mulmod(x2, z1, n),
-                n
+                mulmod(z2, x1, p),
+                mulmod(x2, z1, p),
+                p
             ),
-            mulmod(z1, z2, n)
+            mulmod(z1, z2, p)
         );
     }
 
@@ -154,11 +150,11 @@ contract AuditTracer {
     {
         (x3, z3) = (
             addmod(
-                mulmod(z2, x1, n),
-                mulmod(n - x2, z1, n),
-                n
+                mulmod(z2, x1, p),
+                mulmod(p - x2, z1, p),
+                p
             ),
-            mulmod(z1, z2, n)
+            mulmod(z1, z2, p)
         );
     }
 
@@ -170,8 +166,8 @@ contract AuditTracer {
         returns(uint256 x3, uint256 z3)
     {
         (x3, z3) = (
-            mulmod(x1, x2, n),
-            mulmod(z1, z2, n)
+            mulmod(x1, x2, p),
+            mulmod(z1, z2, p)
         );
     }
 
@@ -183,8 +179,8 @@ contract AuditTracer {
         returns(uint256 x3, uint256 z3)
     {
         (x3, z3) = (
-            mulmod(x1, z2, n),
-            mulmod(z1, x2, n)
+            mulmod(x1, z2, p),
+            mulmod(z1, x2, p)
         );
     }
 
@@ -193,13 +189,13 @@ contract AuditTracer {
     {
         uint256 t = 0;
         uint256 newT = 1;
-        uint256 r = n;
+        uint256 r = p;
         uint256 newR = val;
         uint256 qi;
         while (newR != 0) {
             qi = r / newR;
 
-            (t, newT) = (newT, addmod(t, (n - mulmod(qi, newT, n)), n));
+            (t, newT) = (newT, addmod(t, (p - mulmod(qi, newT, p)), p));
             (r, newR) = (newR, r - qi * newR );
         }
 
@@ -248,9 +244,9 @@ contract AuditTracer {
         (y3, db) = _jSub(y3, db, y1, z1);
 
         if (da != db) {
-            x3 = mulmod(x3, db, n);
-            y3 = mulmod(y3, da, n);
-            z3 = mulmod(da, db, n);
+            x3 = mulmod(x3, db, p);
+            y3 = mulmod(y3, da, p);
+            z3 = mulmod(da, db, p);
         } else {
             z3 = da;
         }
@@ -298,8 +294,8 @@ contract AuditTracer {
         uint256 z;
         (x3, y3, z) = _ecAdd(x1, y1, 1, x2, y2, 1);
         z = _inverse(z);
-        x3 = mulmod(x3, z, n);
-        y3 = mulmod(y3, z, n);
+        x3 = mulmod(x3, z, p);
+        y3 = mulmod(y3, z, p);
     }
 
     function ecmul(uint256 x1, uint256 y1, uint256 scalar) public view
@@ -308,8 +304,8 @@ contract AuditTracer {
         uint256 z;
         (x2, y2, z) = _ecMul(scalar, x1, y1, 1);
         z = _inverse(z);
-        x2 = mulmod(x2, z, n);
-        y2 = mulmod(y2, z, n);
+        x2 = mulmod(x2, z, p);
+        y2 = mulmod(y2, z, p);
     }
 
 }

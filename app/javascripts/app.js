@@ -65,7 +65,7 @@ window.get_public_key = async function () {
 	console.log(calculate_public_key);
 	
 	let public_key = await AuditTracer.methods.get_public_key().call();
-	console.log(public_key);	
+	console.log(public_key);
 
 	$("#myicon3").removeClass();
 	$("#myicon3").addClass("myicon-tick-checked");
@@ -98,12 +98,14 @@ window.get_public_key = async function () {
 window.register = async function () {
   try {
 
-    let _q = getUrlParameter('q');
-    let _N = getUrlParameter('N');
-    let _g = getUrlParameter('g');
-    let _p = getUrlParameter('p');
+	let _a = "0"
+	let _b = "7"
+	let _p = "115792089237316195423570985008687907853269984665640564039457584007908834671663"
+	let _gx = "14519509735293947827288577209312317083665953431108465511763141066544895460406"
+	let _gy = "19684769395795572483620032515699151948010901016215908752425022930402275400968"
 
-    let parameters = AuditTracer.methods.register_parameter();
+	alert(1111)
+    let parameters = AuditTracer.methods.register_parameter(_a,_b,_p,_gx,_gy);
     await  parameters.send();
 	
 	let privatekey = await AuditTracer.methods.get_private_key().call();
@@ -207,8 +209,10 @@ window.logsubs = function(address){
 window.initParam = function(){
 	$("#p1").val(getUrlParameter('p'));
 	$("#p2").val(getUrlParameter('p'));
-	$("#q1").val(getUrlParameter('q'));
-	$("#q2").val(getUrlParameter('q'));
+	$("#a1").val(getUrlParameter('a'));
+	$("#a2").val(getUrlParameter('a'));
+	$("#b1").val(getUrlParameter('b'));
+	$("#b2").val(getUrlParameter('b'));
 	$("#g1").val(getUrlParameter('g'));
 	$("#g2").val(getUrlParameter('g'));
 	$("#h1").val(getUrlParameter('h'));
@@ -219,7 +223,6 @@ window.initParam = function(){
 	$("#xi").val(getUrlParameter('xi'));	 
 	$("#z1").val(getUrlParameter('z'));
 	$("#z2").val(getUrlParameter('z'));
-	$("#N").val(getUrlParameter('N'));
 	
 	// tracing.html
 	if(checkContractAddress()){
