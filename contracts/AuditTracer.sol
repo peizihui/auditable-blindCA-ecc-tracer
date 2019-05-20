@@ -102,15 +102,12 @@ contract AuditTracer {
     
     function rand_less_than(uint256 upper_bound) private returns(uint256){
         index = index + 1;
-        uint256 r = PRNG(index);
-        if(r < upper_bound){
-            return r;
-        }
-        rand_less_than(upper_bound);
+        uint256 r = PRNG(index) % upper_bound;
+		return r;
     }
     
-    function PRNG(uint256 t) private view returns(uint256) {
-        return uint256(uint256(keccak256(abi.encodePacked(msg.sender,now,t)))) ;
+    function PRNG(uint256 seed) private view returns(uint256) {
+        return uint256(uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty,msg.sender,now,seed)))) ;
     }
 
     function quick_power(uint256 al, uint256 bl, uint256 m) private pure returns(uint256){
