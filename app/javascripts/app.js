@@ -20,12 +20,15 @@ window.identity_tracing = async function () {
 	let zeta1 = getUrlParameter('zeta1');
 	let xiupsilon = getUrlParameter('xiupsilon');
 	
-	let identity = AuditTracer.methods.identity_calculating(zeta1);
+	let zeta1_gx = zeta1.substring(1,zeta1.indexOf(","))
+	let zeta1_gy = zeta1.substring(zeta1.indexOf(",")+2, zeta1.length-1)
+	
+	let identity = AuditTracer.methods.identity_calculating(zeta1_gx,zeta1_gy);
 	await  identity.send();
 	
 	let identity_xiupsilon = await AuditTracer.methods.identity_tracing().call();
 	
-	$("#credential_xiupsilon").val(identity_xiupsilon)
+	$("#credential_xiupsilon").val("["+identity_xiupsilon[0]+","+identity_xiupsilon[1]+"]")
 	
   } catch (err) {
     $("#vote-status-alert").text("Error: " + err);
@@ -43,16 +46,13 @@ window.credential_tracing = async function () {
 	
     let xiupsilon_gx = xiupsilon.substring(1,xiupsilon.indexOf(","))
 	let xiupsilon_gy = trimStr(xiupsilon.substring(xiupsilon.indexOf(",")+1, xiupsilon.length-1))
-	
+
 	let credential = AuditTracer.methods.credential_calculating(xiupsilon_gx,xiupsilon_gy);
 	await  credential.send();
-	console.log(credential)
-		
+	
     let credential_zeta1 = await AuditTracer.methods.credential_tracing().call();
-	console.log(credential_zeta1)
-	
-	$("#res_zeta_1").val(credential_zeta1)
-	
+	$("#res_zeta_1").val("["+credential_zeta1[0]+","+credential_zeta1[1]+"]")
+
   } catch (err) {
     $("#vote-status-alert").text("Error: " + err);
     console.log(err);
@@ -104,11 +104,12 @@ window.register = async function () {
 	let _a = getUrlParameter('a')
 	let _b = getUrlParameter('b')
 	let _p = getUrlParameter('p')
+	let _n = getUrlParameter('n')
 	let _g = getUrlParameter('g')
 	let _gx = _g.substring(1,_g.indexOf(","))
 	let _gy = trimStr(_g.substring(_g.indexOf(",")+1, _g.length-1))
 
-    let parameters = AuditTracer.methods.register_parameter(_a,_b,_p,_gx,_gy);
+    let parameters = AuditTracer.methods.register_parameter(_a,_b,_p,_n,_gx,_gy);
     await  parameters.send();
 	
 	//let privatekey = await AuditTracer.methods.get_private_key().call();
@@ -211,6 +212,8 @@ window.logsubs = function(address){
 window.initParam = function(){
 	$("#p1").val(getUrlParameter('p'));
 	$("#p2").val(getUrlParameter('p'));
+	$("#n1").val(getUrlParameter('n'));
+	$("#n2").val(getUrlParameter('n'));
 	$("#a1").val(getUrlParameter('a'));
 	$("#a2").val(getUrlParameter('a'));
 	$("#b1").val(getUrlParameter('b'));
