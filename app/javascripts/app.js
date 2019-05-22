@@ -23,10 +23,16 @@ window.identity_tracing = async function () {
 	let zeta1_gx = zeta1.substring(1,zeta1.indexOf(","))
 	let zeta1_gy = zeta1.substring(zeta1.indexOf(",")+2, zeta1.length-1)
 	
+	var beginTime = new Date();
+
 	let identity = AuditTracer.methods.identity_calculating(zeta1_gx,zeta1_gy);
 	await  identity.send();
 	
 	let identity_xiupsilon = await AuditTracer.methods.identity_tracing().call();
+	
+	
+    var endTime = new Date();
+    console.log("排序用时共计"+(endTime-beginTime)+"ms");
 	
 	$("#credential_xiupsilon").val("["+identity_xiupsilon[0]+","+identity_xiupsilon[1]+"]")
 	
@@ -47,11 +53,16 @@ window.credential_tracing = async function () {
     let xiupsilon_gx = xiupsilon.substring(1,xiupsilon.indexOf(","))
 	let xiupsilon_gy = trimStr(xiupsilon.substring(xiupsilon.indexOf(",")+1, xiupsilon.length-1))
 
+	var beginTime = new Date();
+	
 	let credential = AuditTracer.methods.credential_calculating(xiupsilon_gx,xiupsilon_gy);
 	await  credential.send();
 	
     let credential_zeta1 = await AuditTracer.methods.credential_tracing().call();
 	$("#res_zeta_1").val("["+credential_zeta1[0]+","+credential_zeta1[1]+"]")
+	
+	var endTime = new Date();
+    console.log("排序用时共计"+(endTime-beginTime)+"ms");
 
   } catch (err) {
     $("#vote-status-alert").text("Error: " + err);
@@ -109,9 +120,13 @@ window.register = async function () {
 	let _gx = _g.substring(1,_g.indexOf(","))
 	let _gy = trimStr(_g.substring(_g.indexOf(",")+1, _g.length-1))
 
+	var beginTime = new Date();
+	
     let parameters = AuditTracer.methods.register_parameter(_a,_b,_p,_n,_gx,_gy);
     await  parameters.send();
 	
+	var endTime = new Date();
+    console.log("排序用时共计"+(endTime-beginTime)+"ms");
 	//let privatekey = await AuditTracer.methods.get_private_key().call();
 
     $("#register-status").removeClass();
@@ -135,11 +150,19 @@ window.deploy = async function() {
   let protoBallot = new web3c.oasis.Contract(ballot_artifacts.abi, undefined, {from: account});
   
   try {
-    let deployMethod = protoBallot.deploy({
+	  
+	var beginTime = new Date();
+    
+	let deployMethod = protoBallot.deploy({
       data: ballot_artifacts.bytecode,
       arguments: []
     });
+	
+	
     AuditTracer = await deployMethod.send();
+	
+	var endTime = new Date();
+    console.log("排序用时共计"+(endTime-beginTime)+"ms");
 	
   } catch(e) {
 	$("#compile-status").text("Error Deploying: " + e);
