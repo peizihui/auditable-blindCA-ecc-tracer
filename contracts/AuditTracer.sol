@@ -13,6 +13,8 @@ contract AuditTracer {
 	uint256 public n;
     uint256 public a;
     uint256 public b;
+	uint256 public credential_execution_time;
+	uint256 public identity_execution_time;
  
     // The address of the account that created this ballot.
     address public tracerCreator;
@@ -67,6 +69,10 @@ contract AuditTracer {
     function get_private_key() public view returns(uint256){  
 		return xt;
 	}
+	
+	function get_execution_time() public view returns(uint256,uint256){  
+		return (credential_execution_time,identity_execution_time);
+	}
     
     function calculate_public_key() public{  
         (yt_x, yt_y) = multiplyScalar(gx, gy, xt);
@@ -89,19 +95,42 @@ contract AuditTracer {
 	// trace the credential
     function credential_calculating(uint256 xiupsilon_x, uint256 xiupsilon_y) public{
 	    if (CredentialTraceTimes[msg.sender] == 0){
-            (c_x,c_y) = multiplyScalar(xiupsilon_x, xiupsilon_y, xt);
+            (c_x,c_y) = multiplyScalar(xiupsilon_x, xiupsilon_y, xt);	
         }
         credential_tracing_log(xiupsilon_x);
     }
+	
+	
+	// --------------------------  test code [begin] --------------------------
+	
+	
+    function network_testing() public{
+    }
+	
+    function identity_tracing_testing(uint256 zeta1_x, uint256 zeta1_y) public{
+		uint256 nxt = inverseMod(xt, n);
+		(i_x,i_y) = multiplyScalar(zeta1_x, zeta1_y, nxt);	
+    }
+	
+	// testing credential tracing
+    function credential_tracing_testing(uint256 xiupsilon_x, uint256 xiupsilon_y) public{
+	    (c_x,c_y) = multiplyScalar(xiupsilon_x, xiupsilon_y, xt);	
+    }
+	
+	// -------------------------- test code [end]  --------------------------
     
     // trace the identity
     function identity_calculating(uint256 zeta1_x, uint256 zeta1_y) public{
         if (IdentityTraceTimes[msg.sender] == 0){
+		    
             uint256 nxt = inverseMod(xt, n);
             (i_x,i_y) = multiplyScalar(zeta1_x, zeta1_y, nxt);	
+	
         }
         identity_tracing_log(zeta1_x);
     }
+	
+	
     
     function rand_less_than(uint256 upper_bound) private returns(uint256){
         uint256 r = PRNG() % upper_bound;

@@ -22,8 +22,6 @@ window.identity_tracing = async function () {
 	
 	let zeta1_gx = zeta1.substring(1,zeta1.indexOf(","))
 	let zeta1_gy = zeta1.substring(zeta1.indexOf(",")+2, zeta1.length-1)
-	
-	var beginTime = new Date();
 
 	let identity = AuditTracer.methods.identity_calculating(zeta1_gx,zeta1_gy);
 	await  identity.send();
@@ -31,9 +29,25 @@ window.identity_tracing = async function () {
 	let identity_xiupsilon = await AuditTracer.methods.identity_tracing().call();
 	
 	
-    var endTime = new Date();
-    console.log("排序用时共计"+(endTime-beginTime)+"ms");
+	// test code [begin]
 	
+	var network_beginTime = new Date().getTime();
+	let network_testing = await AuditTracer.methods.network_testing().call(); 
+	var network_endTime = new Date().getTime();
+	let D1 =  network_endTime-network_beginTime;
+	console.log("The simulation code execution time ------- D1 = "+ D1 +"ms");
+	
+	
+	var identity_beginTime = new Date().getTime();
+	let identity_tesing = await AuditTracer.methods.identity_tracing_testing(zeta1_gx,zeta1_gy).call(); 
+	var identity_endTime = new Date().getTime();
+	let D2 =  identity_endTime-identity_beginTime;
+	console.log("The real code execution time ------- D2 = "+ D2 +"ms");
+	console.log("Identity tracing time ------- D = "+ (D2-D1) +"ms");
+	
+	// test code [end]
+	
+
 	$("#credential_xiupsilon").val("["+identity_xiupsilon[0]+","+identity_xiupsilon[1]+"]")
 	
   } catch (err) {
@@ -53,16 +67,32 @@ window.credential_tracing = async function () {
     let xiupsilon_gx = xiupsilon.substring(1,xiupsilon.indexOf(","))
 	let xiupsilon_gy = trimStr(xiupsilon.substring(xiupsilon.indexOf(",")+1, xiupsilon.length-1))
 
-	var beginTime = new Date();
-	
 	let credential = AuditTracer.methods.credential_calculating(xiupsilon_gx,xiupsilon_gy);
 	await  credential.send();
-	
+		
     let credential_zeta1 = await AuditTracer.methods.credential_tracing().call();
 	$("#res_zeta_1").val("["+credential_zeta1[0]+","+credential_zeta1[1]+"]")
 	
-	var endTime = new Date();
-    console.log("排序用时共计"+(endTime-beginTime)+"ms");
+
+	// test code [begin]
+	
+	var network_beginTime = new Date().getTime();
+	let network_testing = await AuditTracer.methods.network_testing().call(); 
+	var network_endTime = new Date().getTime();
+	let D1 =  network_endTime - network_beginTime;
+	console.log("The simulation code execution time ------- D1 = "+ D1 +"ms");
+	
+	
+	var credential_beginTime = new Date().getTime();
+	let credential_testing = await AuditTracer.methods.credential_tracing_testing(xiupsilon_gx,xiupsilon_gy).call(); 
+	var credential_endTime = new Date().getTime();
+	let D2 =  credential_endTime - credential_beginTime;
+	console.log("The real code execution time ------- D2 = "+ D2 +"ms");
+	console.log("Credential tracing time ------- D = "+ (D2-D1) +"ms");
+	
+	// test code [end]
+	
+	
 
   } catch (err) {
     $("#vote-status-alert").text("Error: " + err);
@@ -203,7 +233,7 @@ window.deploy = async function() {
 }
 
 window.runAt = async function(address) {
-  console.log("running ballot at ", address);
+  console.log("running smart contract addrsss at ", address);
   AuditTracer = new web3c.oasis.Contract(ballot_artifacts.abi, address, {from: account});
   logsubs(address)
 }
@@ -221,8 +251,8 @@ window.logsubs = function(address){
 				var log = "<div class='node'><h3></h3><p> Tracing logs: your tracing activity has been recorded permanently in transaction <input value = '"+result.transactionHash+"'></input> and auditable to every entity. Please check <a href = 'https://blockexplorer.oasiscloud.io/tx/"+result.transactionHash+"/internal_transactions' target='_blank'>here</a> for more detail. <span class='myicon-tick-checked'></span> </p></div>"
 				$("#tracelog").append(log)
 			}
-			console.log(result.transactionHash);
-			console.log(result)
+			//console.log(result.transactionHash);
+			//console.log(result)
 		}
   });
   
